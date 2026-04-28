@@ -1,0 +1,566 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>JEE + CEE Master Routine</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    :root {
+      --bg1: #020617;
+      --bg2: #0f172a;
+      --card: rgba(15, 23, 42, 0.72);
+      --line: rgba(148, 163, 184, 0.22);
+      --text: #f8fafc;
+      --muted: #cbd5e1;
+      --blue: #38bdf8;
+      --green: #34d399;
+      --purple: #a78bfa;
+      --yellow: #fde68a;
+      --pink: #fb7185;
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: Inter, Arial, sans-serif;
+      background:
+        radial-gradient(circle at top left, rgba(56,189,248,0.2), transparent 28%),
+        radial-gradient(circle at bottom right, rgba(167,139,250,0.22), transparent 28%),
+        linear-gradient(135deg, var(--bg1), var(--bg2));
+      color: var(--text);
+      min-height: 100vh;
+      overflow-x: hidden;
+    }
+
+    .noise {
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      opacity: .05;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 220 220' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+      z-index: -2;
+    }
+
+    .orb {
+      position: fixed;
+      border-radius: 999px;
+      filter: blur(55px);
+      opacity: .42;
+      z-index: -1;
+      animation: float 8s infinite alternate ease-in-out;
+    }
+    .orb1 { width: 300px; height: 300px; background: var(--blue); top: 8%; left: 4%; }
+    .orb2 { width: 360px; height: 360px; background: var(--purple); right: 3%; bottom: 6%; animation-delay: 1.3s; }
+    .orb3 { width: 220px; height: 220px; background: var(--green); left: 42%; top: 42%; animation-delay: 2.5s; }
+
+    @keyframes float {
+      from { transform: translate3d(0, 0, 0) scale(1); }
+      to { transform: translate3d(28px, -36px, 0) scale(1.08); }
+    }
+
+    .stars span {
+      position: fixed;
+      width: 4px; height: 4px;
+      background: white;
+      border-radius: 50%;
+      opacity: .65;
+      animation: twinkle 3s infinite ease-in-out;
+      z-index: -1;
+    }
+
+    @keyframes twinkle {
+      0%,100% { opacity: .15; transform: scale(.7); }
+      50% { opacity: .9; transform: scale(1.4); }
+    }
+
+    header {
+      width: min(1180px, 92%);
+      margin: auto;
+      padding: 48px 0 26px;
+      text-align: center;
+      animation: fadeDown .9s ease both;
+    }
+
+    .pill {
+      display: inline-block;
+      padding: 9px 16px;
+      border: 1px solid var(--line);
+      border-radius: 999px;
+      color: #e0f2fe;
+      background: rgba(56,189,248,.12);
+      margin-bottom: 18px;
+      animation: softPulse 2.8s infinite ease-in-out;
+    }
+
+    @keyframes softPulse {
+      0%,100% { transform: scale(1); box-shadow: 0 0 0 rgba(56,189,248,0); }
+      50% { transform: scale(1.03); box-shadow: 0 0 24px rgba(56,189,248,.18); }
+    }
+
+    h1 {
+      font-size: clamp(34px, 6vw, 72px);
+      line-height: 1.05;
+      letter-spacing: -1.7px;
+      background: linear-gradient(90deg, #7dd3fc, #c4b5fd, #86efac, #fde68a);
+      background-size: 240% auto;
+      -webkit-background-clip: text;
+      color: transparent;
+      animation: shine 5s linear infinite;
+    }
+
+    @keyframes shine {
+      to { background-position: 240% center; }
+    }
+
+    header p {
+      margin: 18px auto 0;
+      max-width: 760px;
+      color: var(--muted);
+      font-size: 18px;
+      line-height: 1.7;
+    }
+
+    .container {
+      width: min(1180px, 92%);
+      margin: auto;
+      padding: 20px 0 70px;
+    }
+
+    .nav {
+      position: sticky;
+      top: 12px;
+      z-index: 10;
+      display: flex;
+      gap: 10px;
+      justify-content: center;
+      flex-wrap: wrap;
+      margin: 10px 0 28px;
+      padding: 12px;
+      border-radius: 22px;
+      background: rgba(2,6,23,.58);
+      backdrop-filter: blur(14px);
+      border: 1px solid var(--line);
+      animation: fadeUp .8s ease both;
+    }
+
+    .nav a {
+      text-decoration: none;
+      color: #e2e8f0;
+      padding: 9px 13px;
+      border-radius: 999px;
+      background: rgba(148,163,184,.10);
+      transition: .25s;
+      font-size: 14px;
+    }
+
+    .nav a:hover {
+      background: rgba(56,189,248,.20);
+      transform: translateY(-2px);
+    }
+
+    .card {
+      position: relative;
+      overflow: hidden;
+      background: var(--card);
+      border: 1px solid var(--line);
+      border-radius: 28px;
+      padding: 26px;
+      margin: 24px 0;
+      backdrop-filter: blur(18px);
+      box-shadow: 0 25px 80px rgba(0,0,0,.32);
+      animation: fadeUp .9s ease both;
+      transition: .32s ease;
+    }
+
+    .card::before {
+      content: "";
+      position: absolute;
+      inset: -2px;
+      background: linear-gradient(120deg, transparent, rgba(56,189,248,.22), transparent);
+      transform: translateX(-100%);
+      transition: .8s;
+      pointer-events: none;
+    }
+
+    .card:hover {
+      transform: translateY(-7px);
+      border-color: rgba(56,189,248,.45);
+      box-shadow: 0 30px 90px rgba(56,189,248,.14);
+    }
+
+    .card:hover::before { transform: translateX(100%); }
+
+    @keyframes fadeDown {
+      from { opacity: 0; transform: translateY(-28px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(34px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    h2 {
+      font-size: clamp(25px, 3vw, 34px);
+      margin-bottom: 16px;
+      color: #bae6fd;
+    }
+
+    .sub {
+      color: var(--muted);
+      line-height: 1.7;
+      margin-bottom: 17px;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      border-radius: 18px;
+      overflow: hidden;
+      background: rgba(2,6,23,.25);
+    }
+
+    th, td {
+      padding: 16px;
+      border-bottom: 1px solid rgba(148,163,184,.17);
+      text-align: left;
+      vertical-align: top;
+    }
+
+    th {
+      background: rgba(56,189,248,.16);
+      color: #e0f2fe;
+      font-size: 15px;
+    }
+
+    tr { transition: .25s; }
+    tr:hover {
+      background: rgba(56,189,248,.09);
+      transform: scale(1.006);
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
+      gap: 18px;
+    }
+
+    .mini {
+      padding: 20px;
+      border: 1px solid var(--line);
+      border-radius: 22px;
+      background: rgba(30,41,59,.68);
+      transition: .3s;
+      animation: cardBreath 4s infinite ease-in-out;
+    }
+
+    .mini:hover {
+      transform: translateY(-6px) rotate(.5deg);
+      background: rgba(30,41,59,.92);
+    }
+
+    @keyframes cardBreath {
+      0%,100% { box-shadow: 0 0 0 rgba(167,139,250,0); }
+      50% { box-shadow: 0 0 30px rgba(167,139,250,.10); }
+    }
+
+    .mini h3 {
+      color: #86efac;
+      margin-bottom: 8px;
+      font-size: 20px;
+    }
+
+    .tag {
+      display: inline-block;
+      margin: 5px 5px 5px 0;
+      padding: 8px 12px;
+      border-radius: 999px;
+      font-size: 13px;
+      border: 1px solid rgba(148,163,184,.25);
+      background: rgba(148,163,184,.11);
+      color: #e2e8f0;
+      transition: .25s;
+    }
+
+    .tag:hover { transform: translateY(-3px); background: rgba(52,211,153,.18); }
+
+    .timeline {
+      display: grid;
+      gap: 14px;
+      position: relative;
+    }
+
+    .step {
+      display: grid;
+      grid-template-columns: 46px 1fr;
+      gap: 14px;
+      align-items: start;
+      animation: slideIn .7s ease both;
+    }
+
+    .dot {
+      width: 38px; height: 38px;
+      border-radius: 50%;
+      display: grid;
+      place-items: center;
+      background: linear-gradient(135deg, var(--blue), var(--purple));
+      box-shadow: 0 0 22px rgba(56,189,248,.28);
+      animation: rotateGlow 5s linear infinite;
+    }
+
+    @keyframes rotateGlow {
+      to { transform: rotate(360deg); }
+    }
+
+    @keyframes slideIn {
+      from { opacity: 0; transform: translateX(-24px); }
+      to { opacity: 1; transform: translateX(0); }
+    }
+
+    .progressWrap { margin: 14px 0; }
+    .progressLabel { display:flex; justify-content:space-between; color:#e2e8f0; margin-bottom:8px; }
+    .progress {
+      height: 15px;
+      background: rgba(148,163,184,.22);
+      border-radius: 999px;
+      overflow: hidden;
+    }
+
+    .bar {
+      height: 100%;
+      width: 0;
+      background: linear-gradient(90deg, var(--blue), var(--green));
+      animation: load 2.2s ease forwards;
+    }
+
+    @keyframes load { to { width: var(--w); } }
+
+    .quote {
+      text-align: center;
+      font-size: clamp(22px, 3vw, 34px);
+      line-height: 1.35;
+      color: var(--yellow);
+      animation: breathe 3.4s infinite ease-in-out;
+    }
+
+    @keyframes breathe {
+      0%,100% { transform: scale(1); opacity:.86; }
+      50% { transform: scale(1.025); opacity:1; }
+    }
+
+    .printBtn {
+      border: 0;
+      color: #020617;
+      background: linear-gradient(90deg, #7dd3fc, #86efac);
+      padding: 13px 18px;
+      border-radius: 999px;
+      font-weight: 700;
+      cursor: pointer;
+      transition: .25s;
+      margin-top: 12px;
+    }
+
+    .printBtn:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 18px 40px rgba(56,189,248,.24);
+    }
+
+    .footer {
+      text-align: center;
+      color: #94a3b8;
+      padding: 28px;
+    }
+
+    @media (max-width: 720px) {
+      th, td { padding: 11px; font-size: 14px; }
+      .card { padding: 18px; }
+      .step { grid-template-columns: 38px 1fr; }
+      .dot { width: 32px; height: 32px; }
+    }
+
+    @media print {
+      body { background: white; color: black; }
+      .orb, .noise, .stars, .nav, .printBtn { display:none; }
+      .card { background: white; color: black; box-shadow:none; border:1px solid #aaa; }
+      h1, h2, .mini h3 { color: black; background:none; -webkit-text-fill-color: initial; }
+      .sub, header p { color: #333; }
+      th { background:#ddd; color:black; }
+      .tag { color:black; border:1px solid #aaa; }
+    }
+  </style>
+</head>
+<body>
+  <div class="noise"></div>
+  <div class="orb orb1"></div>
+  <div class="orb orb2"></div>
+  <div class="orb orb3"></div>
+
+  <div class="stars">
+    <span style="top:12%;left:18%;animation-delay:.2s"></span>
+    <span style="top:22%;left:82%;animation-delay:1s"></span>
+    <span style="top:44%;left:10%;animation-delay:1.8s"></span>
+    <span style="top:72%;left:72%;animation-delay:.6s"></span>
+    <span style="top:62%;left:38%;animation-delay:2.3s"></span>
+    <span style="top:84%;left:22%;animation-delay:1.3s"></span>
+  </div>
+
+  <header>
+    <div class="pill">Class 12 PCM | JEE + CEE | 11th Backlog | Coding Balance</div>
+    <h1>Weekly Master Routine</h1>
+    <p>
+      Ye routine tera actual schedule follow karta hai: morning Physics, daily 11th backlog,
+      Maths-Chem practice, coding/game dev for dream and relaxation, plus Sunday test and English.
+    </p>
+    <button class="printBtn" onclick="window.print()">Print / Save as PDF</button>
+  </header>
+
+  <main class="container">
+    <nav class="nav">
+      <a href="#routine">Routine</a>
+      <a href="#rotation">Rotation</a>
+      <a href="#sunday">Sunday</a>
+      <a href="#tips">Tips</a>
+      <a href="#mistakes">Mistakes</a>
+      <a href="#tracker">Tracker</a>
+    </nav>
+
+    <section class="card" id="routine">
+      <h2>Monday to Saturday Routine</h2>
+      <p class="sub">Main rule: time strict rakho, lekin result question practice se aayega. Lecture ke baad same topic ka MCQ compulsory.</p>
+      <table>
+        <tr><th>Time</th><th>Activity</th><th>Important Note</th></tr>
+        <tr><td>5:00 - 6:00 AM</td><td>Exercise</td><td>Heavy workout mat karna. Energy bachani hai study ke liye.</td></tr>
+        <tr><td>6:00 - 8:00 AM</td><td>Physics Lecture from PW</td><td>Short notes banao. Sirf lecture dekhna enough nahi hai.</td></tr>
+        <tr><td>8:00 - 10:00 AM</td><td>Physics MCQ Practice</td><td>30 Q class 12 + 10 Q class 11. Agar pending rahe toh Sunday backlog.</td></tr>
+        <tr><td>10:00 AM - 3:00 PM</td><td>Ready + College + Maths Lecture</td><td>College me free time mile toh formula sheet revise.</td></tr>
+        <tr><td>4:00 - 5:30 PM</td><td>Coding / Game Dev</td><td>Strict 1.5 hr. AI career ke liye coding, game dev relaxation ke liye.</td></tr>
+        <tr><td>5:30 - 7:00 PM</td><td>Class 11 Backlog</td><td>PCM rotation follow karo. Full lecture nahi, notes + MCQ first.</td></tr>
+        <tr><td>7:00 - 9:00 PM</td><td>Maths Practice</td><td>Module + PYQ. Stuck 5 min se zyada hua toh mark and skip.</td></tr>
+        <tr><td>9:00 - 11:00 PM</td><td>Chemistry Practice</td><td>NCERT + module + PYQ. Inorganic ke liye NCERT line important.</td></tr>
+      </table>
+    </section>
+
+    <section class="card" id="rotation">
+      <h2>Weekly PCM Lecture Rotation</h2>
+      <p class="sub">Daily 2 PCM classes ka system hai. 6 days me total 12 classes honge. Balance ke liye har subject ko 4 classes milenge.</p>
+      <div class="grid">
+        <div class="mini"><h3>Monday</h3><p>Physics + Maths</p></div>
+        <div class="mini"><h3>Tuesday</h3><p>Chemistry + Physics</p></div>
+        <div class="mini"><h3>Wednesday</h3><p>Maths + Chemistry</p></div>
+        <div class="mini"><h3>Thursday</h3><p>Physics + Maths</p></div>
+        <div class="mini"><h3>Friday</h3><p>Chemistry + Physics</p></div>
+        <div class="mini"><h3>Saturday</h3><p>Maths + Chemistry</p></div>
+      </div>
+      <br>
+      <span class="tag">Physics: 4 classes/week</span>
+      <span class="tag">Chemistry: 4 classes/week</span>
+      <span class="tag">Maths: 4 classes/week</span>
+    </section>
+
+    <section class="card">
+      <h2>Class 11 Backlog Rotation</h2>
+      <div class="grid">
+        <div class="mini"><h3>Monday</h3><p>11th Physics: Mechanics basics, NLM, WPE, rotation basics.</p></div>
+        <div class="mini"><h3>Tuesday</h3><p>11th Chemistry: Mole, atomic structure, chemical bonding.</p></div>
+        <div class="mini"><h3>Wednesday</h3><p>11th Maths: Trigo, quadratic, sequence, straight line.</p></div>
+        <div class="mini"><h3>Thursday</h3><p>11th Physics: Gravitation, SHM, waves, units and dimensions.</p></div>
+        <div class="mini"><h3>Friday</h3><p>11th Chemistry: GOC, hydrocarbons, thermodynamics, equilibrium.</p></div>
+        <div class="mini"><h3>Saturday</h3><p>11th Maths: Permutation, binomial, limits basics, conic basics.</p></div>
+      </div>
+    </section>
+
+    <section class="card" id="sunday">
+      <h2>Sunday Strict Routine</h2>
+      <p class="sub">Sunday me sirf wahi jo tune bola: test + backlog + 11th 30 min + English + Alt English + light workout.</p>
+      <table>
+        <tr><th>Time</th><th>Activity</th><th>Purpose</th></tr>
+        <tr><td>5:30 - 6:00 AM</td><td>Light Workout</td><td>Body active, brain fresh.</td></tr>
+        <tr><td>6:00 - 7:30 AM</td><td>Mock Test</td><td>Speed, accuracy, pressure handling.</td></tr>
+        <tr><td>7:30 - 8:00 AM</td><td>Quick Analysis</td><td>Wrong, guessed, skipped questions mark karo.</td></tr>
+        <tr><td>7:00 - 8:00 PM</td><td>Backlog Clearing</td><td>Week ka pending MCQ and weak topic.</td></tr>
+        <tr><td>8:00 - 8:30 PM</td><td>Class 11 Revision</td><td>Formula + 10 quick questions.</td></tr>
+        <tr><td>8:30 - 9:15 PM</td><td>English New Chapter</td><td>Summary, theme, important Q/A.</td></tr>
+        <tr><td>9:15 - 10:00 PM</td><td>Alternative English</td><td>Summary, word meaning, possible answer.</td></tr>
+      </table>
+    </section>
+
+    <section class="card" id="tips">
+      <h2>Important Study Tips</h2>
+      <div class="timeline">
+        <div class="step"><div class="dot">1</div><div><h3>Lecture ke baad same topic MCQ</h3><p class="sub">Concept fresh hota hai. Isi time practice karne se topic strong hota hai.</p></div></div>
+        <div class="step"><div class="dot">2</div><div><h3>5-minute skip rule</h3><p class="sub">Ek question pe 5 min se zyada stuck hua toh mark karo aur next question. Warna pura slot barbaad.</p></div></div>
+        <div class="step"><div class="dot">3</div><div><h3>Error notebook banao</h3><p class="sub">Har galti ka reason likho: concept mistake, calculation mistake, formula bhool gaya, silly mistake.</p></div></div>
+        <div class="step"><div class="dot">4</div><div><h3>Sunday analysis serious lo</h3><p class="sub">Test dena important hai, lekin analysis usse bhi important hai.</p></div></div>
+        <div class="step"><div class="dot">5</div><div><h3>Coding ko reward ki tarah use karo</h3><p class="sub">Coding dream hai, isliye chhodna nahi. Bas strict 1.5 hr limit maintain karo.</p></div></div>
+      </div>
+    </section>
+
+    <section class="card" id="mistakes">
+      <h2>Mistakes Jo Avoid Karni Hai</h2>
+      <div class="grid">
+        <div class="mini"><h3>Lecture binge</h3><p>Sirf lecture dekhne se selection nahi hota. Practice zaroori hai.</p></div>
+        <div class="mini"><h3>11th ignore</h3><p>JEE me 11th ka base strong nahi hua toh 12th bhi weak lagega.</p></div>
+        <div class="mini"><h3>No sleep</h3><p>Sleep kam hua toh focus, memory aur speed teeno down honge.</p></div>
+        <div class="mini"><h3>Hard question trap</h3><p>Ek tough question pe 20 min waste mat karo. Mark and move.</p></div>
+        <div class="mini"><h3>Random YouTube</h3><p>Study ke naam pe random video mat dekhna. PW + module + PYQ enough.</p></div>
+        <div class="mini"><h3>Backlog snowball</h3><p>Pending ka list banao. Sunday ko clear karo.</p></div>
+      </div>
+    </section>
+
+    <section class="card">
+      <h2>Daily MCQ Target System</h2>
+      <p class="sub">Target strict rakho, lekin time cap bhi rakho. Max 2 hours ke baad pending mark karo.</p>
+      <table>
+        <tr><th>Subject</th><th>Daily Target</th><th>Priority</th></tr>
+        <tr><td>Physics</td><td>30 class 12 + 10 class 11</td><td>Same lecture topic + previous base</td></tr>
+        <tr><td>Maths</td><td>30 to 40 questions</td><td>Module Level 1 + PYQ</td></tr>
+        <tr><td>Chemistry</td><td>35 to 40 questions</td><td>NCERT + module + PYQ</td></tr>
+        <tr><td>11th Backlog</td><td>15 to 25 questions</td><td>Revision notes first, then practice</td></tr>
+      </table>
+    </section>
+
+    <section class="card" id="tracker">
+      <h2>Weekly Progress Tracker</h2>
+      <div class="progressWrap">
+        <div class="progressLabel"><span>Physics Lecture + MCQ</span><span>85%</span></div>
+        <div class="progress"><div class="bar" style="--w:85%"></div></div>
+      </div>
+      <div class="progressWrap">
+        <div class="progressLabel"><span>Maths Practice</span><span>78%</span></div>
+        <div class="progress"><div class="bar" style="--w:78%; animation-delay:.2s"></div></div>
+      </div>
+      <div class="progressWrap">
+        <div class="progressLabel"><span>Chemistry Practice</span><span>82%</span></div>
+        <div class="progress"><div class="bar" style="--w:82%; animation-delay:.4s"></div></div>
+      </div>
+      <div class="progressWrap">
+        <div class="progressLabel"><span>11th Backlog</span><span>70%</span></div>
+        <div class="progress"><div class="bar" style="--w:70%; animation-delay:.6s"></div></div>
+      </div>
+      <p class="sub">Note: Ye sample tracker hai. Tu weekly percentage khud update kar sakta hai.</p>
+    </section>
+
+    <section class="card">
+      <h2>Mini Checklist</h2>
+      <span class="tag">Physics lecture done?</span>
+      <span class="tag">40 Physics MCQ done?</span>
+      <span class="tag">Maths practice done?</span>
+      <span class="tag">Chem NCERT touched?</span>
+      <span class="tag">11th backlog done?</span>
+      <span class="tag">Coding limit followed?</span>
+      <span class="tag">Mistake notebook updated?</span>
+      <span class="tag">Sleep on time?</span>
+    </section>
+
+    <section class="card quote">
+      “Subah Physics, shaam Maths-Chem, daily 11th backlog = full control.”
+    </section>
+  </main>
+
+  <div class="footer">
+    Made for focused JEE + CEE preparation. Stay consistent, not perfect.
+  </div>
+</body>
+</html>
